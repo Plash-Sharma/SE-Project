@@ -1,0 +1,26 @@
+<%- include('partials/head') %>
+
+<header class="home-header">
+    <h1>Edit File</h1>
+    <h2>Update "<%= file.name %>"</h2>
+</header>
+
+<main class="file-main">
+    <%- include('partials/inline-errors') %>
+
+    <form action="/folder/<%= file.parentFolderId %>/edit-file/<%= file.fileId %>" method="POST" class="app-form" id="edit-file-form">
+        <div class="form-row">
+            <label for="name">File Name</label>
+            <input type="text" id="name" name="name" value="<%= file.name %>" required maxlength="100">
+        </div>
+        <div class="form-row">
+            <label for="description">Description <span class="hint">(optional)</span></label>
+            <input type="text" id="description" name="description" value="<%= file.description || '' %>" maxlength="500">
+        </div>
+        <%- include('partials/visibility', { visibilities, selectedVisibility: file.visibilityName }) %>
+        <button type="submit" class="form-submit-btn" id="submit-edit-file">Save Changes</button>
+        <a href="/folder/<%= file.parentFolderId %>" class="form-cancel-link">Cancel</a>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

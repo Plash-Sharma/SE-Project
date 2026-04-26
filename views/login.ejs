@@ -1,0 +1,25 @@
+<%- include('partials/head') %>
+
+<header class="home-header">
+    <h1>Login</h1>
+    <h2>Access your folders and files</h2>
+</header>
+
+<main class="login-main">
+    <%- include('partials/inline-errors') %>
+
+    <form action="/login" method="POST" class="app-form" id="login-form">
+        <div class="form-row">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+        </div>
+        <div class="form-row">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="form-submit-btn" id="login-submit">Login</button>
+        <p class="form-footer-text">Don't have an account? <a href="/signup">Sign up</a></p>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

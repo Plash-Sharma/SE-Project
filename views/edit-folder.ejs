@@ -1,0 +1,26 @@
+<%- include('partials/head') %>
+
+<header class="home-header">
+    <h1>Edit Folder</h1>
+    <h2>Update "<%= folder.name %>"</h2>
+</header>
+
+<main class="folder-main">
+    <%- include('partials/inline-errors') %>
+
+    <form action="/edit-folder/<%= folder.folderId %>" method="POST" class="app-form" id="edit-folder-form">
+        <div class="form-row">
+            <label for="name">Folder Name</label>
+            <input type="text" id="name" name="name" value="<%= folder.name %>" required maxlength="100">
+        </div>
+        <div class="form-row">
+            <label for="description">Description <span class="hint">(optional)</span></label>
+            <input type="text" id="description" name="description" value="<%= folder.description || '' %>" maxlength="500">
+        </div>
+        <%- include('partials/visibility', { visibilities, selectedVisibility: folder.visibilityName }) %>
+        <button type="submit" class="form-submit-btn" id="submit-edit-folder">Save Changes</button>
+        <a href="/" class="form-cancel-link">Cancel</a>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

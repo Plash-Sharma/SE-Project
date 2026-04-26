@@ -1,0 +1,12 @@
+<%- include('partials/head') %>
+
+<main class="error-page-main">
+    <div class="error-notice">
+        <p class="error-code"><%= errorCode %></p>
+        <p class="error-description"><%= errorDescription %></p>
+        <p><%= errorMessage %></p>
+        <p>Return to <a href="/">homepage</a></p>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

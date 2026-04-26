@@ -1,0 +1,15 @@
+<fieldset>
+    <legend>Visibility</legend>
+    <div class="radio-list">
+        <% visibilities.forEach(vis => { %>
+            <label class="radio-option">
+                <input type="radio" name="visibility" value="<%= vis.name %>"
+                    <% if (locals.selectedVisibility === vis.name || (!locals.selectedVisibility && vis.name === 'private')) { %> checked <% } %>>
+                <div>
+                    <strong><%= vis.name %></strong>
+                    <span><%= vis.description %></span>
+                </div>
+            </label>
+        <% }) %>
+    </div>
+</fieldset>

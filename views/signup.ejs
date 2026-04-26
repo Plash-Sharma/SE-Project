@@ -1,0 +1,33 @@
+<%- include('partials/head') %>
+
+<header class="home-header">
+    <h1>Signup</h1>
+    <h2>Create your account</h2>
+</header>
+
+<main class="signup-main">
+    <%- include('partials/inline-errors') %>
+
+    <form action="/signup" method="POST" class="app-form" id="signup-form">
+        <div class="form-row">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your full name" required>
+        </div>
+        <div class="form-row">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username">
+        </div>
+        <div class="form-row">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="At least 6 characters" required autocomplete="new-password">
+        </div>
+        <div class="form-row">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="form-submit-btn" id="signup-submit">Create Account</button>
+        <p class="form-footer-text">Already have an account? <a href="/login">Log in</a></p>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

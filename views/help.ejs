@@ -1,0 +1,45 @@
+<%- include('partials/head') %>
+
+<header class="home-header">
+    <h1>Help</h1>
+    <h2>Frequently asked questions</h2>
+</header>
+
+<main class="help-main">
+    <div class="qa-cont">
+        <h2>What is Uploader?</h2>
+        <p>Uploader is a lightweight file hosting application that allows you to create folders, upload files (images, PDFs, text files, and more), and access them from anywhere. You can also share your files and folders publicly using share links.</p>
+    </div>
+
+    <div class="qa-cont">
+        <h2>What file types can I upload?</h2>
+        <p>You can upload images (JPEG, PNG, GIF, WebP, SVG, BMP), PDFs, plain text files (.txt), and Word documents (.doc, .docx). Each file can be up to 10MB in size.</p>
+    </div>
+
+    <div class="qa-cont">
+        <h2>What is the maximum file size?</h2>
+        <p>The maximum file size for uploads is 10MB per file.</p>
+    </div>
+
+    <div class="qa-cont">
+        <h2>What are visibility settings?</h2>
+        <p>Each folder and file can be set to either <em>Private</em> (only you can see it) or <em>Public</em> (anyone with the link can view it). You can change visibility at any time from the edit page.</p>
+    </div>
+
+    <div class="qa-cont">
+        <h2>How do I share a file or folder?</h2>
+        <p>Set your folder or file visibility to <em>Public</em>, then use the share link format: <code>/share/folder/ID</code> for folders and <code>/share/file/ID</code> for files. Anyone with the link can view the content.</p>
+    </div>
+
+    <div class="qa-cont">
+        <h2>Can I edit or delete my files?</h2>
+        <p>Yes! You can edit the name, description, and visibility of any file or folder. You can also delete files and folders — note that deleting a folder will also delete all files within it.</p>
+    </div>
+
+    <div class="qa-cont">
+        <h2>Is my data secure?</h2>
+        <p>Your password is securely hashed using bcrypt, and sessions are stored server-side. Private files and folders are only accessible to the account owner.</p>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

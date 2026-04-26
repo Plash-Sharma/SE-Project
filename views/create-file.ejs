@@ -1,0 +1,31 @@
+<%- include('partials/head') %>
+
+<header class="home-header">
+    <h1>Upload File</h1>
+    <h2>Add a file to "<%= folder.name %>"</h2>
+</header>
+
+<main class="file-main">
+    <%- include('partials/inline-errors') %>
+
+    <form action="/folder/<%= folder.folderId %>/create-file" method="POST" enctype="multipart/form-data" class="app-form" id="create-file-form">
+        <div class="form-row">
+            <label for="name">File Name</label>
+            <input type="text" id="name" name="name" placeholder="Display name for this file" required maxlength="100">
+        </div>
+        <div class="form-row">
+            <label for="description">Description <span class="hint">(optional)</span></label>
+            <input type="text" id="description" name="description" placeholder="Brief description" maxlength="500">
+        </div>
+        <div class="form-row">
+            <label for="file">Select File</label>
+            <input type="file" id="file" name="file" accept="image/*,.pdf,.txt,.doc,.docx" required>
+            <span class="hint">Max 10MB · Images, PDF, TXT, DOC</span>
+        </div>
+        <%- include('partials/visibility', { visibilities, selectedVisibility: 'private' }) %>
+        <button type="submit" class="form-submit-btn" id="submit-upload-file">Upload</button>
+        <a href="/folder/<%= folder.folderId %>" class="form-cancel-link">Cancel</a>
+    </form>
+</main>
+
+<%- include('partials/footer') %>

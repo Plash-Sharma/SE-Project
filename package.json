@@ -1,0 +1,26 @@
+{
+  "name": "file-uploader",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "keywords": ["file-uploader", "express", "ejs", "sqlite"],
+  "author": "",
+  "license": "ISC",
+  "description": "File Uploader - A modern file hosting platform",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.9.0",
+    "connect-sqlite3": "^0.9.16",
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
+    "multer": "^2.1.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
+}
