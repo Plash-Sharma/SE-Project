@@ -1,96 +1,143 @@
 <%- include('partials/head') %>
 
-<header class="home-header">
-    <h1><%= locals.authenticated ? 'Home' : 'Uploader' %></h1>
-    <h2>
+    <header class="home-header">
+        <h1>
+            <%= locals.authenticated ? 'Home' : 'Uploader' %>
+        </h1>
+        <h2>
+            <% if (locals.authenticated) { %>
+                <span class="session-info">Logged in as:&nbsp;<span class="session-user">
+                        <%= locals.username %>
+                    </span></span>
+                <% } else { %>
+                    A modern platform to store and share your files
+                    <% } %>
+        </h2>
+    </header>
+
+    <main class="home-main">
         <% if (locals.authenticated) { %>
-            <span class="session-info">Logged in as:&nbsp;<span class="session-user"><%= locals.username %></span></span>
-        <% } else { %>
-            A modern platform to store and share your files
-        <% } %>
-    </h2>
-</header>
-
-<main class="home-main">
-    <% if (locals.authenticated) { %>
-        <% if (folders.length === 0) { %>
-            <div class="no-folders-notice">
-                <div class="folder-icon-cont glow-border">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--highlight-text)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                    </svg>
-                </div>
-                <p class="notice-heading">No folders yet!</p>
-                <p class="notice-subtext">Create your first folder to start hosting and sharing your files.</p>
-                <div class="action-links-cont">
-                    <a href="/create-folder" class="create-folder-link" id="create-first-folder">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 10v6M9 13h6"/>
-                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            <% if (folders.length===0) { %>
+                <div class="no-folders-notice">
+                    <div class="folder-icon-cont glow-border">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                            stroke="var(--highlight-text)" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
                         </svg>
-                        New folder
-                    </a>
-                </div>
-            </div>
-        <% } else { %>
-            <div class="all-folders-cont">
-                <% folders.forEach(folder => { %>
-                    <div class="folder-cont" id="folder-<%= folder.folderId %>">
-                        <div class="folder-info">
-                            <div class="folder-icon-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--highlight-text)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="folder-name"><%= folder.name %></p>
-                                <p class="folder-subtext"><%= folder.fileCount %> file<%= folder.fileCount !== 1 ? 's' : '' %> · <%= folder.visibilityName %></p>
-                            </div>
-                        </div>
-                        <% if (folder.description) { %>
-                            <p class="folder-desc"><%= folder.description %></p>
-                        <% } %>
-                        <div class="folder-actions">
-                            <a href="/edit-folder/<%= folder.folderId %>" class="edit-folder-link" id="edit-folder-<%= folder.folderId %>">Edit</a>
-                            <a href="/folder/<%= folder.folderId %>" class="view-folder-link" id="view-folder-<%= folder.folderId %>">Open</a>
-                            <a href="/delete-folder/<%= folder.folderId %>" class="delete-folder-link" id="delete-folder-<%= folder.folderId %>">Delete</a>
-                        </div>
                     </div>
-                <% }) %>
-            </div>
-        <% } %>
-    <% } else { %>
-        <div class="login-notice">
-            <div class="folder-icon-cont glow-border">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--highlight-text)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-            </div>
-            <p class="notice-heading">Host, view, and share your files</p>
-            <p class="notice-subtext">Uploader is a lightweight file hosting app that lets you create folders, upload files (images, PDFs, text & more), and access them from anywhere.</p>
-            <div class="action-links-cont">
-                <a href="/signup" class="signup-link" id="cta-signup">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4-4v2"/>
-                        <circle cx="8.5" cy="7" r="4"/>
-                        <line x1="20" y1="8" x2="20" y2="14"/>
-                        <line x1="23" y1="11" x2="17" y2="11"/>
-                    </svg>
-                    Signup
-                </a>
-                <a href="/login" class="login-link" id="cta-login">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                        <polyline points="10 17 15 12 10 7"/>
-                        <line x1="15" y1="12" x2="3" y2="12"/>
-                    </svg>
-                    Login
-                </a>
-            </div>
-        </div>
-    <% } %>
-</main>
+                    <p class="notice-heading">No folders yet!</p>
+                    <p class="notice-subtext">Create your first folder to start hosting and sharing your files.</p>
+                    <div class="action-links-cont">
+                        <a href="/create-folder" class="create-folder-link" id="create-first-folder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 10v6M9 13h6" />
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                            </svg>
+                            New folder
+                        </a>
+                    </div>
+                </div>
+                <% } else { %>
+                    <div class="all-folders-cont">
+                        <% folders.forEach(folder=> { %>
+                            <div class="folder-cont" id="folder-<%= folder.folderId %>">
+                                <div class="folder-info">
+                                    <div class="folder-icon-badge">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                                            viewBox="0 0 24 24" fill="none" stroke="var(--highlight-text)"
+                                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <path
+                                                d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="folder-name">
+                                            <%= folder.name %>
+                                        </p>
+                                        <p class="folder-subtext">
+                                            <%= folder.fileCount %> file<%= folder.fileCount !==1 ? 's' : '' %> · <%=
+                                                        folder.visibilityName %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <% if (folder.description) { %>
+                                    <p class="folder-desc">
+                                        <%= folder.description %>
+                                    </p>
+                                    <% } %>
+                                        <div
+                                            class="folder-actions<%= folder.visibilityName === 'public' ? ' has-share' : '' %>">
+                                            <a href="/edit-folder/<%= folder.folderId %>" class="edit-folder-link"
+                                                id="edit-folder-<%= folder.folderId %>">Edit</a>
+                                            <a href="/folder/<%= folder.folderId %>" class="view-folder-link"
+                                                id="view-folder-<%= folder.folderId %>">Open</a>
+                                            <% if (folder.visibilityName==='public' ) { %>
+                                                <button class="share-link-btn"
+                                                    onclick="copyShareLink('/share/folder/<%= folder.folderId %>')"
+                                                    id="share-folder-<%= folder.folderId %>" title="Copy share link">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="18" cy="5" r="3" />
+                                                        <circle cx="6" cy="12" r="3" />
+                                                        <circle cx="18" cy="19" r="3" />
+                                                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                                                    </svg>
+                                                    Share
+                                                </button>
+                                                <% } %>
+                                                    <a href="/delete-folder/<%= folder.folderId %>"
+                                                        class="delete-folder-link"
+                                                        id="delete-folder-<%= folder.folderId %>">Delete</a>
+                                        </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
+                        <% } else { %>
+                            <div class="login-notice">
+                                <div class="folder-icon-cont glow-border">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                                        fill="none" stroke="var(--highlight-text)" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="17 8 12 3 7 8" />
+                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                    </svg>
+                                </div>
+                                <p class="notice-heading">Host, view, and share your files</p>
+                                <p class="notice-subtext">Uploader is a lightweight file hosting app that lets you
+                                    create folders, upload files (images, PDFs, text & more), and access them from
+                                    anywhere.</p>
+                                <div class="action-links-cont">
+                                    <a href="/signup" class="signup-link" id="cta-signup">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4-4v2" />
+                                            <circle cx="8.5" cy="7" r="4" />
+                                            <line x1="20" y1="8" x2="20" y2="14" />
+                                            <line x1="23" y1="11" x2="17" y2="11" />
+                                        </svg>
+                                        Signup
+                                    </a>
+                                    <a href="/login" class="login-link" id="cta-login">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                            <polyline points="10 17 15 12 10 7" />
+                                            <line x1="15" y1="12" x2="3" y2="12" />
+                                        </svg>
+                                        Login
+                                    </a>
+                                </div>
+                            </div>
+                            <% } %>
+    </main>
 
-<%- include('partials/footer') %>
+    <%- include('partials/footer') %>
