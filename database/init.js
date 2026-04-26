@@ -76,4 +76,11 @@ function initializeSchema() {
     }
 }
 
+// Graceful shutdown — close DB connection
+process.on('SIGTERM', () => {
+    if (db) {
+        db.close();
+    }
+});
+
 module.exports = { getDb };

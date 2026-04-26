@@ -2,11 +2,20 @@
   "name": "file-uploader",
   "version": "1.0.0",
   "main": "app.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node app.js",
+    "build": "npm install",
     "dev": "node --watch app.js"
   },
-  "keywords": ["file-uploader", "express", "ejs", "sqlite"],
+  "keywords": [
+    "file-uploader",
+    "express",
+    "ejs",
+    "sqlite"
+  ],
   "author": "",
   "license": "ISC",
   "description": "File Uploader - A modern file hosting platform",
