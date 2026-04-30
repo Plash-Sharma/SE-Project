@@ -17,7 +17,11 @@
             <label for="description">Description <span class="hint">(optional)</span></label>
             <input type="text" id="description" name="description" placeholder="Brief description" maxlength="500">
         </div>
+        <!-- FOLDER VISIBILITY SELECTOR COMMENTED OUT
         <%- include('partials/visibility', { visibilities, selectedVisibility: 'private' }) %>
+        -->
+        <!-- Default visibility sent as hidden field -->
+        <input type="hidden" name="visibility" value="private">
         <button type="submit" class="form-submit-btn" id="submit-create-folder">Create Folder</button>
         <a href="/" class="form-cancel-link">Cancel</a>
     </form>

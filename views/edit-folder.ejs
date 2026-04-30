@@ -17,7 +17,11 @@
             <label for="description">Description <span class="hint">(optional)</span></label>
             <input type="text" id="description" name="description" value="<%= folder.description || '' %>" maxlength="500">
         </div>
+        <!-- FOLDER VISIBILITY SELECTOR COMMENTED OUT
         <%- include('partials/visibility', { visibilities, selectedVisibility: folder.visibilityName }) %>
+        -->
+        <!-- Default visibility sent as hidden field -->
+        <input type="hidden" name="visibility" value="<%= folder.visibilityName %>">
         <button type="submit" class="form-submit-btn" id="submit-edit-folder">Save Changes</button>
         <a href="/" class="form-cancel-link">Cancel</a>
     </form>

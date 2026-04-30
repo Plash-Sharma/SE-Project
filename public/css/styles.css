@@ -664,6 +664,22 @@ footer {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.footer-btn-wide {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto;
+    padding: 0 1rem;
+    border-radius: 999px;
+}
+
+.footer-btn-label {
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
 .footer-btn:hover {
     transform: translateY(-3px);
     border-color: var(--accent-border);

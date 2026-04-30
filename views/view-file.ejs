@@ -20,21 +20,9 @@
                 <div class="file-preview-cont">
                     <div class="file-type-badge">
                         <% if (file.mimeType==='application/pdf' ) { %>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-                                fill="none" stroke="var(--error-text)" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="16" y1="13" x2="8" y2="13" />
-                                <line x1="16" y1="17" x2="8" y2="17" />
-                            </svg>
+                            <i data-lucide="file-text" width="48" height="48" class="lucide-icon" style="color: var(--error-text);"></i>
                             <% } else { %>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-                                    fill="none" stroke="var(--green-button-color)" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                    <polyline points="14 2 14 8 20 8" />
-                                </svg>
+                                <i data-lucide="file" width="48" height="48" class="lucide-icon" style="color: var(--green-button-color);"></i>
                                 <% } %>
                     </div>
                     <p class="file-original-name">
@@ -57,49 +45,24 @@
                             <div class="file-detail-actions">
                                 <a href="/uploads/<%= file.storagePath.split('/').pop() %>" target="_blank"
                                     class="open-btn" id="open-file">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <line x1="10" y1="14" x2="21" y2="3" />
-                                    </svg>
+                                    <i data-lucide="external-link" width="16" height="16" class="lucide-icon" style="margin-right: 6px;"></i>
                                     Open in Browser
                                 </a>
                                 <a href="/folder/<%= file.parentFolderId %>/download/<%= file.fileId %>"
                                     class="download-btn" id="download-file">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                        <polyline points="7 10 12 15 17 10" />
-                                        <line x1="12" y1="15" x2="12" y2="3" />
-                                    </svg>
+                                    <i data-lucide="download" width="16" height="16" class="lucide-icon" style="margin-right: 6px;"></i>
                                     Download
                                 </a>
                                 <% if (file.visibilityName==='public' ) { %>
                                     <button class="share-btn" onclick="copyShareLink('/share/file/<%= file.fileId %>')"
                                         id="share-file-detail">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="18" cy="5" r="3" />
-                                            <circle cx="6" cy="12" r="3" />
-                                            <circle cx="18" cy="19" r="3" />
-                                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                                        </svg>
+                                        <i data-lucide="share-2" width="16" height="16" class="lucide-icon" style="margin-right: 6px;"></i>
                                         Copy Share Link
                                     </button>
                                     <% } %>
                                         <a href="/folder/<%= file.parentFolderId %>" class="back-btn"
                                             id="back-to-folder">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <line x1="19" y1="12" x2="5" y2="12" />
-                                                <polyline points="12 19 5 12 12 5" />
-                                            </svg>
+                                            <i data-lucide="arrow-left" width="16" height="16" class="lucide-icon" style="margin-right: 6px;"></i>
                                             Back to folder
                                         </a>
                             </div>

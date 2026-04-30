@@ -155,7 +155,7 @@ function controllerGetDeleteFile(req, res) {
 // ==================== POST CONTROLLERS ====================
 
 const fileMetaValidation = [
-    body('name').trim().isLength({ min: 1, max: 100 }).withMessage('File name must be between 1 and 100 characters'),
+    body('name').optional({ checkFalsy: true }).trim().isLength({ max: 100 }).withMessage('File name must not exceed 100 characters'),
     body('description').optional({ checkFalsy: true }).trim().isLength({ max: 500 }).withMessage('Description must not exceed 500 characters'),
     body('visibility').isIn(['private', 'public']).withMessage('Please select a valid visibility option'),
 ];
@@ -198,10 +198,11 @@ function controllerPostCreateFile(req, res) {
 
     const { name, description, visibility } = req.body;
     const vis = queries.getVisibilityByName(visibility);
+    const displayName = (name && name.trim()) ? name.trim() : req.file.originalname;
     const storagePath = 'uploads/' + req.file.filename;
 
     queries.createFile(
-        name,
+        displayName,
         req.file.originalname,
         description,
         req.file.mimetype,
