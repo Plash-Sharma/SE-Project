@@ -10,18 +10,41 @@
     </header>
 
     <main class="home-main">
-        <% if (files.length===0) { %>
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb-nav" id="breadcrumb-nav">
+            <a href="/" class="breadcrumb-link">
+                <i data-lucide="house" width="14" height="14" class="lucide-icon"></i>
+                Home
+            </a>
+            <% breadcrumbs.forEach((crumb, index) => { %>
+                <span class="breadcrumb-separator">
+                    <i data-lucide="chevron-right" width="14" height="14" class="lucide-icon"></i>
+                </span>
+                <% if (index < breadcrumbs.length - 1) { %>
+                    <a href="/folder/<%= crumb.folderId %>" class="breadcrumb-link"><%= crumb.name %></a>
+                <% } else { %>
+                    <span class="breadcrumb-current"><%= crumb.name %></span>
+                <% } %>
+            <% }) %>
+        </nav>
+
+        <% if (files.length === 0 && subfolders.length === 0) { %>
             <div class="no-files-notice">
                 <div class="file-icon-cont glow-border">
                         <i data-lucide="file-text" width="36" height="36" class="lucide-icon" style="color: var(--highlight-text);"></i>
                 </div>
-                <p class="notice-heading">No files yet!</p>
-                <p class="notice-subtext">Upload your first file to this folder.</p>
+                <p class="notice-heading">Empty folder</p>
+                <p class="notice-subtext">Upload files or create subfolders to get started.</p>
                 <div class="action-links-cont">
                     <a href="/folder/<%= folder.folderId %>/create-file" class="create-file-link"
                         id="create-first-file">
                         <i data-lucide="file-plus" width="18" height="18" class="lucide-icon" style="margin-right: 6px;"></i>
                         Upload file
+                    </a>
+                    <a href="/folder/<%= folder.folderId %>/create-folder" class="create-file-link"
+                        id="create-first-subfolder">
+                        <i data-lucide="folder-plus" width="18" height="18" class="lucide-icon" style="margin-right: 6px;"></i>
+                        New subfolder
                     </a>
                 </div>
             </div>
@@ -32,7 +55,50 @@
                         <i data-lucide="file-plus" width="16" height="16" class="lucide-icon" style="margin-right: 6px;"></i>
                         Upload file
                     </a>
+                    <a href="/folder/<%= folder.folderId %>/create-folder" class="create-file-link top-action-btn"
+                        id="create-subfolder-btn">
+                        <i data-lucide="folder-plus" width="16" height="16" class="lucide-icon" style="margin-right: 6px;"></i>
+                        New subfolder
+                    </a>
                 </div>
+
+                <% if (subfolders.length > 0) { %>
+                    <div class="all-folders-cont">
+                        <% subfolders.forEach(sub => { %>
+                            <div class="folder-cont" id="subfolder-<%= sub.folderId %>">
+                                <div class="folder-info">
+                                    <div class="folder-icon-badge">
+                                        <i data-lucide="folder" width="28" height="28" class="lucide-icon" style="color: var(--highlight-text);"></i>
+                                    </div>
+                                    <div>
+                                        <p class="folder-name">
+                                            <%= sub.name %>
+                                        </p>
+                                        <p class="folder-subtext">
+                                            <%= sub.fileCount %> file<%= sub.fileCount !== 1 ? 's' : '' %> · <%= sub.subfolderCount %> subfolder<%= sub.subfolderCount !== 1 ? 's' : '' %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <% if (sub.description) { %>
+                                    <p class="folder-desc">
+                                        <%= sub.description %>
+                                    </p>
+                                <% } %>
+                                <div class="folder-actions">
+                                    <a href="/edit-folder/<%= sub.folderId %>" class="edit-folder-link"
+                                        id="edit-subfolder-<%= sub.folderId %>">Edit</a>
+                                    <a href="/folder/<%= sub.folderId %>" class="view-folder-link"
+                                        id="open-subfolder-<%= sub.folderId %>">Open</a>
+                                    <a href="/delete-folder/<%= sub.folderId %>"
+                                        class="delete-folder-link"
+                                        id="delete-subfolder-<%= sub.folderId %>">Delete</a>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+
+                <% if (files.length > 0) { %>
                 <div class="all-files-cont">
                     <% files.forEach(file=> { %>
                         <div class="file-cont" id="file-<%= file.fileId %>">
@@ -74,6 +140,7 @@
                         </div>
                         <% }) %>
                 </div>
+                <% } %>
                 <% } %>
     </main>
 

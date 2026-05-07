@@ -47,7 +47,7 @@
                                             <%= folder.name %>
                                         </p>
                                         <p class="folder-subtext">
-                                            <%= folder.fileCount %> file<%= folder.fileCount !==1 ? 's' : '' %>
+                                            <%= folder.fileCount %> file<%= folder.fileCount !==1 ? 's' : '' %><% if (folder.subfolderCount > 0) { %> · <%= folder.subfolderCount %> subfolder<%= folder.subfolderCount !==1 ? 's' : '' %><% } %>
                                         </p>
                                     </div>
                                 </div>

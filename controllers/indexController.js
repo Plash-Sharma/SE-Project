@@ -243,19 +243,31 @@ function controllerPostDeleteFolder(req, res) {
         });
     }
 
-    // Delete associated files from disk
+    // Get all descendant folder IDs (includes the folder itself)
+    const allFolderIds = queries.getAllDescendantFolderIds(folderId);
+
+    // Delete all files from disk for all descendant folders
     const fs = require('fs');
     const path = require('path');
-    const files = queries.getFilesByFolderId(folderId);
-    files.forEach(file => {
-        const filePath = path.join(__dirname, '..', file.storagePath);
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
+    allFolderIds.forEach(id => {
+        const files = queries.getFilesByFolderId(id);
+        files.forEach(file => {
+            const filePath = path.join(__dirname, '..', file.storagePath);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        });
     });
 
-    queries.deleteFolder(folderId);
-    res.redirect('/');
+    // Delete from DB — cascade will handle child folders due to ON DELETE CASCADE
+    // But we delete bottom-up to be safe with SQLite's FK behavior
+    allFolderIds.reverse().forEach(id => {
+        queries.deleteFolder(id);
+    });
+
+    // Redirect to parent folder if exists, otherwise to home
+    const redirectTo = folder.parentFolderId ? `/folder/${folder.parentFolderId}` : '/';
+    res.redirect(redirectTo);
 }
 
 module.exports = {

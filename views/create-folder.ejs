@@ -1,14 +1,39 @@
 <%- include('partials/head') %>
 
 <header class="home-header">
-    <h1>Create Folder</h1>
-    <h2>Organize your files</h2>
+    <h1><%= typeof parentFolderId !== 'undefined' ? 'Create Subfolder' : 'Create Folder' %></h1>
+    <h2>
+        <% if (typeof parentFolderId !== 'undefined') { %>
+            Inside "<%= parentFolderName %>"
+        <% } else { %>
+            Organize your files
+        <% } %>
+    </h2>
 </header>
 
 <main class="folder-main">
+    <% if (typeof breadcrumbs !== 'undefined' && breadcrumbs && breadcrumbs.length > 0) { %>
+        <nav class="breadcrumb-nav" id="breadcrumb-nav">
+            <a href="/" class="breadcrumb-link">
+                <i data-lucide="house" width="14" height="14" class="lucide-icon"></i>
+                Home
+            </a>
+            <% breadcrumbs.forEach(crumb => { %>
+                <span class="breadcrumb-separator">
+                    <i data-lucide="chevron-right" width="14" height="14" class="lucide-icon"></i>
+                </span>
+                <a href="/folder/<%= crumb.folderId %>" class="breadcrumb-link"><%= crumb.name %></a>
+            <% }) %>
+            <span class="breadcrumb-separator">
+                <i data-lucide="chevron-right" width="14" height="14" class="lucide-icon"></i>
+            </span>
+            <span class="breadcrumb-current">New Subfolder</span>
+        </nav>
+    <% } %>
+
     <%- include('partials/inline-errors') %>
 
-    <form action="/create-folder" method="POST" class="app-form" id="create-folder-form">
+    <form action="<%= typeof parentFolderId !== 'undefined' ? '/folder/' + parentFolderId + '/create-folder' : '/create-folder' %>" method="POST" class="app-form" id="create-folder-form">
         <div class="form-row">
             <label for="name">Folder Name</label>
             <input type="text" id="name" name="name" placeholder="e.g. Vacation Photos" required maxlength="100">
@@ -22,8 +47,10 @@
         -->
         <!-- Default visibility sent as hidden field -->
         <input type="hidden" name="visibility" value="private">
-        <button type="submit" class="form-submit-btn" id="submit-create-folder">Create Folder</button>
-        <a href="/" class="form-cancel-link">Cancel</a>
+        <button type="submit" class="form-submit-btn" id="submit-create-folder">
+            <%= typeof parentFolderId !== 'undefined' ? 'Create Subfolder' : 'Create Folder' %>
+        </button>
+        <a href="<%= typeof parentFolderId !== 'undefined' ? '/folder/' + parentFolderId : '/' %>" class="form-cancel-link">Cancel</a>
     </form>
 </main>
 

@@ -41,8 +41,10 @@ function initializeSchema() {
             description TEXT,
             visibilityId INTEGER NOT NULL DEFAULT 1,
             userId INTEGER NOT NULL,
+            parentFolderId INTEGER DEFAULT NULL,
             FOREIGN KEY (visibilityId) REFERENCES Visibility(visibilityId),
-            FOREIGN KEY (userId) REFERENCES User(userId)
+            FOREIGN KEY (userId) REFERENCES User(userId),
+            FOREIGN KEY (parentFolderId) REFERENCES Folder(folderId) ON DELETE CASCADE
         );
 
         CREATE TABLE IF NOT EXISTS File (
@@ -73,6 +75,13 @@ function initializeSchema() {
         const insert = db.prepare('INSERT INTO Visibility (name, description) VALUES (?, ?)');
         insert.run('private', 'Only visible to the owner of the file/folder');
         insert.run('public', 'Visible to anyone with the link');
+    }
+
+    // Migration: add parentFolderId to Folder if it doesn't exist (for existing databases)
+    try {
+        db.exec('ALTER TABLE Folder ADD COLUMN parentFolderId INTEGER DEFAULT NULL REFERENCES Folder(folderId) ON DELETE CASCADE');
+    } catch (e) {
+        // Column already exists — ignore
     }
 }
 

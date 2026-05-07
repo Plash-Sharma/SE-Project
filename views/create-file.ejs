@@ -9,23 +9,60 @@
     <%- include('partials/inline-errors') %>
 
     <form action="/folder/<%= folder.folderId %>/create-file" method="POST" enctype="multipart/form-data" class="app-form" id="create-file-form">
-        <div class="form-row">
+        <div class="form-row" id="file-name-row">
             <label for="name">File Name <span class="hint">(optional)</span></label>
             <input type="text" id="name" name="name" placeholder="Leave blank to use the uploaded filename" maxlength="100">
         </div>
-        <div class="form-row">
+        <div class="form-row" id="file-description-row">
             <label for="description">Description <span class="hint">(optional)</span></label>
             <input type="text" id="description" name="description" placeholder="Brief description" maxlength="500">
         </div>
         <div class="form-row">
-            <label for="file">Select File</label>
-            <input type="file" id="file" name="file" accept="image/*,.pdf,.txt,.doc,.docx" required>
-            <span class="hint">Max 10MB · Images, PDF, TXT, DOC</span>
+            <label for="file">Select File(s)</label>
+            <input type="file" id="file" name="file" accept="image/*,.pdf,.txt,.doc,.docx" required multiple>
+            <span class="hint">Max 10MB each · Images, PDF, TXT, DOC · Select multiple files with Ctrl/Cmd+Click</span>
+            <span class="hint multi-file-hint" id="multi-file-hint" style="display:none; color: var(--highlight-text); margin-top: 4px;">
+                <i data-lucide="info" width="14" height="14" class="lucide-icon" style="margin-right: 4px;"></i>
+                <span id="file-count-text"></span> — file naming disabled for batch upload
+            </span>
         </div>
         <%- include('partials/visibility', { visibilities, selectedVisibility: 'private' }) %>
         <button type="submit" class="form-submit-btn" id="submit-upload-file">Upload</button>
         <a href="/folder/<%= folder.folderId %>" class="form-cancel-link">Cancel</a>
     </form>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var fileInput = document.getElementById('file');
+        var nameRow = document.getElementById('file-name-row');
+        var descRow = document.getElementById('file-description-row');
+        var nameInput = document.getElementById('name');
+        var descInput = document.getElementById('description');
+        var multiHint = document.getElementById('multi-file-hint');
+        var fileCountText = document.getElementById('file-count-text');
+
+        fileInput.addEventListener('change', function () {
+            var count = fileInput.files.length;
+            if (count > 1) {
+                // Hide name and description rows for multiple files
+                nameRow.style.display = 'none';
+                descRow.style.display = 'none';
+                nameInput.value = '';
+                descInput.value = '';
+                // Show multi-file hint
+                fileCountText.textContent = count + ' files selected';
+                multiHint.style.display = 'flex';
+                // Re-init lucide icons for the hint
+                if (window.lucide) window.lucide.createIcons();
+            } else {
+                // Show name and description rows for single file
+                nameRow.style.display = '';
+                descRow.style.display = '';
+                multiHint.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 <%- include('partials/footer') %>

@@ -57,10 +57,14 @@ function controllerGetFolder(req, res) {
     }
 
     const files = queries.getFilesByFolderId(folderId);
+    const subfolders = queries.getSubfoldersByFolderId(folderId);
+    const breadcrumbs = queries.getFolderBreadcrumbs(folderId);
     res.render('folder', {
         title: folder.name,
         folder,
         files,
+        subfolders,
+        breadcrumbs,
     });
 }
 
@@ -152,6 +156,33 @@ function controllerGetDeleteFile(req, res) {
     });
 }
 
+// Subfolder creation — GET
+function controllerGetCreateSubfolder(req, res) {
+    if (!req.isAuthenticated()) return res.redirect('/login');
+    const parentFolderId = parseInt(req.params.folderId);
+    const parentFolder = queries.getFolderById(parentFolderId);
+
+    if (!parentFolder || parentFolder.userId !== req.user.userId) {
+        return res.status(404).render('error', {
+            title: 'Error',
+            errorCode: 404,
+            errorDescription: 'Folder not found',
+            errorMessage: 'The parent folder does not exist.',
+        });
+    }
+
+    const visibilities = queries.getAllVisibilities();
+    const breadcrumbs = queries.getFolderBreadcrumbs(parentFolderId);
+    res.render('create-folder', {
+        title: 'Create Subfolder',
+        errors: [],
+        visibilities,
+        parentFolderId,
+        parentFolderName: parentFolder.name,
+        breadcrumbs,
+    });
+}
+
 // ==================== POST CONTROLLERS ====================
 
 const fileMetaValidation = [
@@ -186,33 +217,84 @@ function controllerPostCreateFile(req, res) {
         });
     }
 
-    if (!req.file) {
+    // Handle multiple files (req.files) or fall back to single (req.file)
+    const uploadedFiles = req.files || (req.file ? [req.file] : []);
+
+    if (uploadedFiles.length === 0) {
         const visibilities = queries.getAllVisibilities();
         return res.status(400).render('create-file', {
             title: 'Upload File',
             folder,
-            errors: [{ msg: 'Please select a file to upload' }],
+            errors: [{ msg: 'Please select at least one file to upload' }],
             visibilities,
         });
     }
 
     const { name, description, visibility } = req.body;
     const vis = queries.getVisibilityByName(visibility);
-    const displayName = (name && name.trim()) ? name.trim() : req.file.originalname;
-    const storagePath = 'uploads/' + req.file.filename;
+    const isSingleFile = uploadedFiles.length === 1;
 
-    queries.createFile(
-        displayName,
-        req.file.originalname,
-        description,
-        req.file.mimetype,
-        req.file.size,
-        storagePath,
-        vis.visibilityId,
-        folderId
-    );
+    uploadedFiles.forEach((file) => {
+        // Only use custom name for single file upload
+        const displayName = (isSingleFile && name && name.trim()) ? name.trim() : file.originalname;
+        const storagePath = 'uploads/' + file.filename;
+
+        queries.createFile(
+            displayName,
+            file.originalname,
+            isSingleFile ? description : null,
+            file.mimetype,
+            file.size,
+            storagePath,
+            vis.visibilityId,
+            folderId
+        );
+    });
 
     res.redirect(`/folder/${folderId}`);
+}
+
+// Subfolder creation — POST
+const subfolderValidation = [
+    body('name').trim().isLength({ min: 1, max: 100 }).withMessage('Folder name must be between 1 and 100 characters'),
+    body('description').optional({ checkFalsy: true }).trim().isLength({ max: 500 }).withMessage('Description must not exceed 500 characters'),
+    body('visibility').isIn(['private', 'public']).withMessage('Please select a valid visibility option'),
+];
+
+function controllerPostCreateSubfolder(req, res) {
+    if (!req.isAuthenticated()) return res.redirect('/login');
+
+    const parentFolderId = parseInt(req.params.folderId);
+    const parentFolder = queries.getFolderById(parentFolderId);
+
+    if (!parentFolder || parentFolder.userId !== req.user.userId) {
+        return res.status(404).render('error', {
+            title: 'Error',
+            errorCode: 404,
+            errorDescription: 'Folder not found',
+            errorMessage: 'The parent folder does not exist.',
+        });
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const visibilities = queries.getAllVisibilities();
+        const breadcrumbs = queries.getFolderBreadcrumbs(parentFolderId);
+        return res.status(400).render('create-folder', {
+            title: 'Create Subfolder',
+            errors: errors.array(),
+            visibilities,
+            parentFolderId,
+            parentFolderName: parentFolder.name,
+            breadcrumbs,
+        });
+    }
+
+    const { name, description, visibility } = req.body;
+    const vis = queries.getVisibilityByName(visibility);
+
+    queries.createFolder(name, description, vis.visibilityId, req.user.userId, parentFolderId);
+    res.redirect(`/folder/${parentFolderId}`);
 }
 
 function controllerPostEditFile(req, res) {
@@ -309,7 +391,9 @@ module.exports = {
     controllerGetFile,
     controllerGetEditFile,
     controllerGetDeleteFile,
+    controllerGetCreateSubfolder,
     controllerPostCreateFile,
+    controllerPostCreateSubfolder: [...subfolderValidation, controllerPostCreateSubfolder],
     controllerPostEditFile,
     controllerPostDeleteFile,
     controllerGetDownload,

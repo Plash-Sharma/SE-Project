@@ -5,6 +5,7 @@ const folderController = require('../controllers/folderController');
 // ------------ GET ROUTES ------------
 router.get('/:folderId', folderController.controllerGetFolder);
 router.get('/:folderId/create-file', folderController.controllerGetCreateFile);
+router.get('/:folderId/create-folder', folderController.controllerGetCreateSubfolder);
 router.get('/:folderId/file/:fileId', folderController.controllerGetFile);
 router.get('/:folderId/edit-file/:fileId', folderController.controllerGetEditFile);
 router.get('/:folderId/delete-file/:fileId', folderController.controllerGetDeleteFile);
@@ -12,9 +13,13 @@ router.get('/:folderId/download/:fileId', folderController.controllerGetDownload
 
 // ------------ POST ROUTES ------------
 router.post('/:folderId/create-file',
-    folderController.upload.single('file'),
+    folderController.upload.array('file', 20),
     folderController.fileMetaValidation,
     folderController.controllerPostCreateFile
+);
+
+router.post('/:folderId/create-folder',
+    folderController.controllerPostCreateSubfolder
 );
 
 router.post('/:folderId/edit-file/:fileId',

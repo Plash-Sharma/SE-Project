@@ -32,33 +32,75 @@ function getVisibilityByName(name) {
 
 // ==================== FOLDER QUERIES ====================
 
-function createFolder(name, description, visibilityId, userId) {
+function createFolder(name, description, visibilityId, userId, parentFolderId = null) {
     const db = getDb();
-    const stmt = db.prepare('INSERT INTO Folder (name, description, visibilityId, userId) VALUES (?, ?, ?, ?)');
-    return stmt.run(name, description || null, visibilityId, userId);
+    const stmt = db.prepare('INSERT INTO Folder (name, description, visibilityId, userId, parentFolderId) VALUES (?, ?, ?, ?, ?)');
+    return stmt.run(name, description || null, visibilityId, userId, parentFolderId);
 }
 
 function getFoldersByUserId(userId) {
     const db = getDb();
     return db.prepare(`
         SELECT f.*, v.name as visibilityName, 
-               (SELECT COUNT(*) FROM File WHERE folderId = f.folderId) as fileCount
+               (SELECT COUNT(*) FROM File WHERE folderId = f.folderId) as fileCount,
+               (SELECT COUNT(*) FROM Folder cf WHERE cf.parentFolderId = f.folderId) as subfolderCount
         FROM Folder f
         JOIN Visibility v ON f.visibilityId = v.visibilityId
-        WHERE f.userId = ?
+        WHERE f.userId = ? AND f.parentFolderId IS NULL
         ORDER BY f.folderId DESC
     `).all(userId);
+}
+
+function getSubfoldersByFolderId(folderId) {
+    const db = getDb();
+    return db.prepare(`
+        SELECT f.*, v.name as visibilityName, 
+               (SELECT COUNT(*) FROM File WHERE folderId = f.folderId) as fileCount,
+               (SELECT COUNT(*) FROM Folder cf WHERE cf.parentFolderId = f.folderId) as subfolderCount
+        FROM Folder f
+        JOIN Visibility v ON f.visibilityId = v.visibilityId
+        WHERE f.parentFolderId = ?
+        ORDER BY f.folderId DESC
+    `).all(folderId);
 }
 
 function getFolderById(folderId) {
     const db = getDb();
     return db.prepare(`
-        SELECT f.*, v.name as visibilityName, u.username as ownerUsername
+        SELECT f.*, v.name as visibilityName, u.username as ownerUsername,
+               pf.name as parentFolderName, pf.folderId as parentFolderIdRef
         FROM Folder f
         JOIN Visibility v ON f.visibilityId = v.visibilityId
         JOIN User u ON f.userId = u.userId
+        LEFT JOIN Folder pf ON f.parentFolderId = pf.folderId
         WHERE f.folderId = ?
     `).get(folderId);
+}
+
+function getFolderBreadcrumbs(folderId) {
+    const db = getDb();
+    const breadcrumbs = [];
+    let currentId = folderId;
+    while (currentId) {
+        const folder = db.prepare('SELECT folderId, name, parentFolderId FROM Folder WHERE folderId = ?').get(currentId);
+        if (!folder) break;
+        breadcrumbs.unshift(folder);
+        currentId = folder.parentFolderId;
+    }
+    return breadcrumbs;
+}
+
+function getAllDescendantFolderIds(folderId) {
+    const db = getDb();
+    const ids = [];
+    const queue = [folderId];
+    while (queue.length > 0) {
+        const currentId = queue.shift();
+        ids.push(currentId);
+        const children = db.prepare('SELECT folderId FROM Folder WHERE parentFolderId = ?').all(currentId);
+        children.forEach(c => queue.push(c.folderId));
+    }
+    return ids;
 }
 
 function updateFolder(folderId, name, description, visibilityId) {
@@ -139,7 +181,10 @@ module.exports = {
     getVisibilityByName,
     createFolder,
     getFoldersByUserId,
+    getSubfoldersByFolderId,
     getFolderById,
+    getFolderBreadcrumbs,
+    getAllDescendantFolderIds,
     updateFolder,
     deleteFolder,
     createFile,
